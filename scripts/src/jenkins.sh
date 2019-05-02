@@ -69,20 +69,10 @@ if [ "$LOADER" = true ] ; then
     readarray -t ZK_HOST_LINES <<< "${ZK_HOST}"
     readarray -t COLLECTION_LINES <<< "${COLLECTION}"
 
-    # create results directory on the docker
-    for (( c=0; c<${NODES}; c++ ))
-    do
-      docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} loader-${c} -- mkdir -p /tmp/logs-${c}
-    done
-
     # run gatling test for a simulation and pass relevant params
     for (( c=0; c<${NODES}; c++ ))
     do
-      if [ "$PRINT_LOG" = true ] ; then
-        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} loader-${c} -- sh runLoader.sh ${NUM_DOCS_LINES[c]} ${ZK_HOST_LINES[c]} ${COLLECTION_LINES[c]} >> loader.log &
-      else
-        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} loader-${c} -- sh runLoader.sh ${NUM_DOCS_LINES[c]} ${ZK_HOST_LINES[c]} ${COLLECTION_LINES[c]}
-      fi
+       docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} loader-${c} -- sh runLoader.sh ${NUM_DOCS_LINES[c]} ${ZK_HOST_LINES[c]} ${COLLECTION_LINES[c]}
     done
 
     for (( c=0; c<${NODES}; c++ ))
@@ -99,7 +89,7 @@ if [ "$LOADER" = true ] ; then
     for (( c=0; c<${NODES}; c++ ))
     do
         docker exec kubectl-support mkdir -p /opt/results/logs-${c}
-        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/loader-${c}:/tmp/logs-${c}/ /opt/results/logs-${c}/
+        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/loader-${c}:/opt/loader/results.txt /opt/results/logs-${c}/
     done
 
     # copy the perf tests to the workspace
@@ -115,20 +105,10 @@ else
     readarray -t JDBC_PASSWORD_LINES <<< "${JDBC_PASSWORD}"
     readarray -t N_TIMES_LINES <<< "${N_TIMES}"
 
-    # create results directory on the docker
-    for (( c=0; c<${NODES}; c++ ))
-    do
-      docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- mkdir -p /tmp/logs-${c}
-    done
-
     # run gatling test for a simulation and pass relevant params
     for (( c=0; c<${NODES}; c++ ))
     do
-      if [ "$PRINT_LOG" = true ] ; then
-        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY_LINES[c]}" ${JDBC_SQL_HOST_LINES[c]} ${JDBC_USER_LINES[c]} ${JDBC_PASSWORD_LINES[c]} ${N_TIMES_LINES[c]} >> load-tester.log &
-      else
-        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY[c]}" ${JDBC_SQL_HOST[c]} ${JDBC_USER[c]} ${JDBC_PASSWORD[c]} ${N_TIMES[c]}
-      fi
+       docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY[c]}" ${JDBC_SQL_HOST[c]} ${JDBC_USER[c]} ${JDBC_PASSWORD[c]} ${N_TIMES[c]}
     done
 
     for (( c=0; c<${NODES}; c++ ))
@@ -145,7 +125,7 @@ else
     for (( c=0; c<${NODES}; c++ ))
     do
         docker exec kubectl-support mkdir -p /opt/results/logs-${c}
-        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/load-tester-${c}:/tmp/logs-${c}/ /opt/results/logs-${c}/
+        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/load-tester-${c}:/opt/load_tester/results.txt /opt/results/logs-${c}/
     done
 
     # copy the perf tests to the workspace
