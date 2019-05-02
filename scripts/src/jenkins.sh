@@ -65,6 +65,10 @@ echo "JOB DESCRIPTION: running....."
 
 if [ "$LOADER" = true ] ; then
 
+    readarray -t NUM_DOCS_LINES <<< "${NUM_DOCS}"
+    readarray -t ZK_HOST_LINES <<< "${ZK_HOST}"
+    readarray -t COLLECTION_LINES <<< "${COLLECTION}"
+
     # create results directory on the docker
     for (( c=0; c<${NODES}; c++ ))
     do
@@ -75,9 +79,9 @@ if [ "$LOADER" = true ] ; then
     for (( c=0; c<${NODES}; c++ ))
     do
       if [ "$PRINT_LOG" = true ] ; then
-        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} loader-${c} -- sh runLoader.sh ${NUM_DOCS} ${ZK_HOST} ${COLLECTION} >> loader.log &
+        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} loader-${c} -- sh runLoader.sh ${NUM_DOCS_LINES[c]} ${ZK_HOST_LINES[c]} ${COLLECTION_LINES[c]} >> loader.log &
       else
-        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} loader-${c} -- sh runLoader.sh ${NUM_DOCS} ${ZK_HOST} ${COLLECTION}
+        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} loader-${c} -- sh runLoader.sh ${NUM_DOCS_LINES[c]} ${ZK_HOST_LINES[c]} ${COLLECTION_LINES[c]}
       fi
     done
 
@@ -105,6 +109,12 @@ if [ "$LOADER" = true ] ; then
 
 else
 
+    readarray -t JDBC_QUERY_LINES <<< "${JDBC_QUERY}"
+    readarray -t JDBC_SQL_HOST_LINES <<< "${JDBC_SQL_HOST}"
+    readarray -t JDBC_USER_LINES <<< "${JDBC_USER}"
+    readarray -t JDBC_PASSWORD_LINES <<< "${JDBC_PASSWORD}"
+    readarray -t N_TIMES_LINES <<< "${N_TIMES}"
+
     # create results directory on the docker
     for (( c=0; c<${NODES}; c++ ))
     do
@@ -115,9 +125,9 @@ else
     for (( c=0; c<${NODES}; c++ ))
     do
       if [ "$PRINT_LOG" = true ] ; then
-        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY}" ${JDBC_SQL_HOST} ${JDBC_USER} ${JDBC_PASSWORD} ${N_TIMES} >> load-tester.log &
+        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY_LINES[c]}" ${JDBC_SQL_HOST_LINES[c]} ${JDBC_USER_LINES[c]} ${JDBC_PASSWORD_LINES[c]} ${N_TIMES_LINES[c]} >> load-tester.log &
       else
-        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY}" ${JDBC_SQL_HOST} ${JDBC_USER} ${JDBC_PASSWORD} ${N_TIMES}
+        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY[c]}" ${JDBC_SQL_HOST[c]} ${JDBC_USER[c]} ${JDBC_PASSWORD[c]} ${N_TIMES[c]}
       fi
     done
 
