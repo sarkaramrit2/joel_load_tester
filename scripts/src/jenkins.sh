@@ -19,7 +19,7 @@ CID=`docker container ls -aq -f "name=kubectl-support"`
 
 # initialise the loader / load-tester image
 sed -i "s/namespace_filler/${GCP_K8_CLUSTER_NAMESPACE}/" ./scripts/src/cluster.yaml
-sed -i "s/num-replicas/${NODES}/" ./scripts/src/cluster.yaml
+sed -i "s/num_replicas/${NODES}/" ./scripts/src/cluster.yaml
 docker cp ./scripts/src/cluster.yaml ${CID}:/opt/cluster.yaml
 # optional property files a user may have uploaded to jenkins
 # Note: Jenkins uses the same string for the file name, and the ENV var,

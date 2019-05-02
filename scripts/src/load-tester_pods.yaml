@@ -24,7 +24,7 @@ spec:
     matchLabels:
       app: joel # has to match .spec.template.metadata.labels
   serviceName: "load-tester"
-  replicas: num-replicas
+  replicas: num_replicas
   template:
     #nodeSelector:
       #managed-search/instance-type: n1-standard-2
