@@ -1,0 +1,22 @@
+FROM openjdk:11
+
+MAINTAINER Amrit Sarkar <sarkaramrit2@gmail.com>
+
+# Install gcloud, kubectl
+RUN \
+    apt-get update -y && apt-get install sudo bash wget -y
+
+# copy loader files
+RUN mkdir -p /opt/load_tester
+COPY load_tester.tar.gz /opt
+RUN tar -C /opt -xzf /opt/load_tester.tar.gz && \
+    chmod -R 777 /opt
+
+# set environment variables
+ENV PATH /opt/load_tester:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV LOAD_TESTER_HOME /opt/load_tester
+
+# working directory for jenkins load testing
+WORKDIR /opt/load_tester
+    
+CMD tail -f /dev/null

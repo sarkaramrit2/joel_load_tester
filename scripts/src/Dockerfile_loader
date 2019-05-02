@@ -1,0 +1,23 @@
+FROM openjdk:11
+
+MAINTAINER Amrit Sarkar <sarkaramrit2@gmail.com>
+
+# Install gcloud, kubectl
+RUN \
+    apt-get update -y && apt-get install sudo bash wget -y
+
+# copy loader files
+RUN mkdir -p /opt/loader/
+COPY loader.tar.gz /opt
+RUN tar -C /opt -xzf /opt/loader.tar.gz && \
+    chmod -R 777 /opt && \
+    cd /opt/loader && sh compileLoader.sh -Xlint:deprecation
+
+# set environment variables
+ENV PATH /opt/loader:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV LOADER_HOME /opt/loader
+
+# working directory for jenkins load testing
+WORKDIR /opt/loader
+    
+CMD tail -f /dev/null
