@@ -93,7 +93,6 @@ if [ "$LOADER" = true ] ; then
     done
 
     # copy the perf tests to the workspace
-    mkdir -p workspace/logs-${BUILD_NUMBER}/
     docker cp ${CID}:/opt/results ./workspace/reports-${BUILD_NUMBER}/
     docker exec kubectl-support rm -rf /opt/results/
 
@@ -129,7 +128,6 @@ else
     done
 
     # copy the perf tests to the workspace
-    mkdir -p workspace/logs-${BUILD_NUMBER}/
     docker cp ${CID}:/opt/results ./workspace/reports-${BUILD_NUMBER}/
     docker exec kubectl-support rm -rf /opt/results/
 fi
