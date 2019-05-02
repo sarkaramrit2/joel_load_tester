@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: load_tester
+  name: load-tester
   namespace: namespace_filler
   labels:
     app: joel
 spec:
   ports:
     - port: 80
-      name: load_tester
+      name: load-tester
   clusterIP: None
   selector:
     app: joel
@@ -17,13 +17,13 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: load_tester
+  name: load-tester
   namespace: namespace_filler
 spec:
   selector:
     matchLabels:
       app: joel # has to match .spec.template.metadata.labels
-  serviceName: "load_tester"
+  serviceName: "load-tester"
   replicas: num-replicas
   template:
     #nodeSelector:
@@ -34,8 +34,8 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-        - name: load_tester
-          image: sarkaramrit2/joel_load_tester:latest
+        - name: load-tester
+          image: sarkaramrit2/joel_load-tester:latest
           ports:
             - containerPort: 80
-              name: load_tester
+              name: load-tester

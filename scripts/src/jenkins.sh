@@ -12,12 +12,12 @@ ESTIMATED_NODES_2=$((NODES + 1))
 if [ "$LOADER" = true ] ; then
     cp ./scripts/src/loader_pods.yaml ./scripts/src/cluster.yaml
 else
-    cp ./scripts/src/load_tester_pods.yaml ./scripts/src/cluster.yaml
+    cp ./scripts/src/load-tester_pods.yaml ./scripts/src/cluster.yaml
 fi
 
 CID=`docker container ls -aq -f "name=kubectl-support"`
 
-# initialise the loader / load_tester image
+# initialise the loader / load-tester image
 sed -i "s/namespace_filler/${GCP_K8_CLUSTER_NAMESPACE}/" ./scripts/src/cluster.yaml
 sed -i "s/num-replicas/${NODES}/" ./scripts/src/cluster.yaml
 docker cp ./scripts/src/cluster.yaml ${CID}:/opt/cluster.yaml
@@ -37,13 +37,13 @@ else
   rm -rf ./CLUSTER_YAML_FILE
 fi
 
-# delete loader / load_tester service and statefulsets, redundant step
+# delete loader / load-tester service and statefulsets, redundant step
 if [ "$LOADER" = true ] ; then
     docker exec kubectl-support kubectl delete statefulsets loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader statefulsets not available!!"
     docker exec kubectl-support kubectl delete service loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader service not available!!"
 else
-    docker exec kubectl-support kubectl delete statefulsets load_tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load_tester statefulsets not available!!"
-    docker exec kubectl-support kubectl delete service load_tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load_tester service not available!!"
+    docker exec kubectl-support kubectl delete statefulsets load-tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load-tester statefulsets not available!!"
+    docker exec kubectl-support kubectl delete service load-tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load-tester service not available!!"
 fi
 sleep 10
 
@@ -108,26 +108,26 @@ else
     # create results directory on the docker
     for (( c=0; c<${NODES}; c++ ))
     do
-      docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- mkdir -p /tmp/logs-${c}
+      docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- mkdir -p /tmp/logs-${c}
     done
 
     # run gatling test for a simulation and pass relevant params
     for (( c=0; c<${NODES}; c++ ))
     do
       if [ "$PRINT_LOG" = true ] ; then
-        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- sh runJDBC.sh ${JDBC_QUERY} ${JDBC_SQL_HOST} ${JDBC_USER} ${JDBC_PASSWORD} ${N_TIMES} >> load_tester.log &
+        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh ${JDBC_QUERY} ${JDBC_SQL_HOST} ${JDBC_USER} ${JDBC_PASSWORD} ${N_TIMES} >> load-tester.log &
       else
-        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- sh runJDBC.sh ${JDBC_QUERY} ${JDBC_SQL_HOST} ${JDBC_USER} ${JDBC_PASSWORD} ${N_TIMES}
+        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh ${JDBC_QUERY} ${JDBC_SQL_HOST} ${JDBC_USER} ${JDBC_PASSWORD} ${N_TIMES}
       fi
     done
 
     for (( c=0; c<${NODES}; c++ ))
     do
-        IF_CMD_EXEC=`docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- ps | grep "java" | wc -l`
+        IF_CMD_EXEC=`docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- ps | grep "java" | wc -l`
         while [ "${IF_CMD_EXEC}" != "0" ]
         do
             sleep 20
-            IF_CMD_EXEC=`docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- ps | grep "java" | wc -l`
+            IF_CMD_EXEC=`docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- ps | grep "java" | wc -l`
         done
     done
 
@@ -135,7 +135,7 @@ else
     for (( c=0; c<${NODES}; c++ ))
     do
         docker exec kubectl-support mkdir -p /opt/results/logs-${c}
-        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/load_tester-${c}:/tmp/logs-${c}/ /opt/results/logs-${c}/
+        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/load-tester-${c}:/tmp/logs-${c}/ /opt/results/logs-${c}/
     done
 
     # copy the perf tests to the workspace
@@ -144,12 +144,12 @@ else
     docker exec kubectl-support rm -rf /opt/results/
 fi
 
-# delete loader / load_tester service and statefulsets, redundant step
+# delete loader / load-tester service and statefulsets, redundant step
 if [ "$LOADER" = true ] ; then
     docker exec kubectl-support kubectl delete statefulsets loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader statefulsets not available!!"
     docker exec kubectl-support kubectl delete service loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader service not available!!"
 else
-    docker exec kubectl-support kubectl delete statefulsets load_tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load_tester statefulsets not available!!"
-    docker exec kubectl-support kubectl delete service load_tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load_tester service not available!!"
+    docker exec kubectl-support kubectl delete statefulsets load-tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load-tester statefulsets not available!!"
+    docker exec kubectl-support kubectl delete service load-tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load-tester service not available!!"
 fi
 sleep 10
