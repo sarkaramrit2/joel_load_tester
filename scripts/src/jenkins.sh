@@ -2,6 +2,7 @@
 
 # Create appropriate directories under workspace
 mkdir -p ./workspace/configs
+mkdir -p ./workspace/logs*
 
 NODES=$((NUM_NODES + 0))
 
