@@ -135,7 +135,11 @@ docker exec kubectl-support rm -rf /opt/results/
 for (( c=0; c<${NODES}; c++ ))
 do
     echo "Last 100 lines from node ${c}"
+    echo "---------------------------------------------"
+    echo "---------------------------------------------"
     tail -n 100 ./workspace/reports-${BUILD_NUMBER}/results/node-${c}/results.txt
+    echo "---------------------------------------------"
+    echo "---------------------------------------------"
 done
 
 # delete loader / load-tester service and statefulsets, redundant step
