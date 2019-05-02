@@ -26,8 +26,8 @@ spec:
   serviceName: "load_tester"
   replicas: num-replicas
   template:
-    nodeSelector:
-      managed-search/instance-type: n1-standard-2
+    #nodeSelector:
+      #managed-search/instance-type: n1-standard-2
     metadata:
       labels:
         app: joel # has to match .spec.selector.matchLabels
