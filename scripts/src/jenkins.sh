@@ -129,13 +129,13 @@ else
 fi
 
 # copy the perf tests to the workspace
-docker cp ${CID}:/opt/results/* ./workspace/reports-${BUILD_NUMBER}/
+docker cp ${CID}:/opt/results ./workspace/reports-${BUILD_NUMBER}/
 docker exec kubectl-support rm -rf /opt/results/
 
 for (( c=0; c<${NODES}; c++ ))
 do
     echo "Last 100 lines from node ${c}"
-     tail -n 100 ./workspace/reports-${BUILD_NUMBER}/node-${c}/result.txt
+     tail -n 100 ./workspace/reports-${BUILD_NUMBER}/results/node-${c}/result.txt
 done
 
 # delete loader / load-tester service and statefulsets, redundant step
