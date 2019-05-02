@@ -143,3 +143,13 @@ else
     docker cp ${CID}:/opt/results ./workspace/reports-${BUILD_NUMBER}/
     docker exec kubectl-support rm -rf /opt/results/
 fi
+
+# delete loader / load_tester service and statefulsets, redundant step
+if [ "$LOADER" = true ] ; then
+    docker exec kubectl-support kubectl delete statefulsets loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader statefulsets not available!!"
+    docker exec kubectl-support kubectl delete service loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader service not available!!"
+else
+    docker exec kubectl-support kubectl delete statefulsets load_tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load_tester statefulsets not available!!"
+    docker exec kubectl-support kubectl delete service load_tester --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "load_tester service not available!!"
+fi
+sleep 10
