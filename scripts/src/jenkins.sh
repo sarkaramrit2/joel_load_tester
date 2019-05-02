@@ -10,7 +10,7 @@ NODES=$((NUM_NODES + 0))
 ESTIMATED_NODES_1=$((NODES))
 ESTIMATED_NODES_2=$((NODES + 1))
 
-if [ "$LOADER" = true ] ; then
+if [ "$LOADER_LOADTESTER" = true ] ; then
     cp ./scripts/src/loader_pods.yaml ./scripts/src/cluster.yaml
 else
     cp ./scripts/src/load-tester_pods.yaml ./scripts/src/cluster.yaml
@@ -39,7 +39,7 @@ else
 fi
 
 # delete loader / load-tester service and statefulsets, redundant step
-if [ "$LOADER" = true ] ; then
+if [ "$LOADER_LOADTESTER" = true ] ; then
     docker exec kubectl-support kubectl delete statefulsets loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader statefulsets not available!!"
     docker exec kubectl-support kubectl delete service loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader service not available!!"
 else
@@ -66,7 +66,7 @@ echo "JOB DESCRIPTION: running....."
 
 mkdir ./workspace/reports-${BUILD_NUMBER}/
 
-if [ "$LOADER" = true ] ; then
+if [ "$LOADER_LOADTESTER" = true ] ; then
 
     readarray -t NUM_DOCS_LINES <<< "${NUM_DOCS}"
     readarray -t ZK_HOST_LINES <<< "${ZK_HOST}"
@@ -143,7 +143,7 @@ do
 done
 
 # delete loader / load-tester service and statefulsets, redundant step
-if [ "$LOADER" = true ] ; then
+if [ "$LOADER_LOADTESTER" = true ] ; then
     docker exec kubectl-support kubectl delete statefulsets loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader statefulsets not available!!"
     docker exec kubectl-support kubectl delete service loader --namespace=${GCP_K8_CLUSTER_NAMESPACE} || echo "loader service not available!!"
 else
