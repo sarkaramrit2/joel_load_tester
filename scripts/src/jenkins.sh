@@ -91,13 +91,9 @@ if [ "$LOADER" = true ] ; then
     # gather the logs
     for (( c=0; c<${NODES}; c++ ))
     do
-        docker exec kubectl-support mkdir -p /opt/results/logs-${c}
-        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/loader-${c}:/opt/loader/results.txt /opt/results/logs-${c}/
+        docker exec kubectl-support mkdir -p /opt/results/node-${c}
+        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/loader-${c}:/opt/loader/results.txt /opt/results/node-${c}/
     done
-
-    # copy the perf tests to the workspace
-    docker cp ${CID}:/opt/results ./workspace/reports-${BUILD_NUMBER}/
-    docker exec kubectl-support rm -rf /opt/results/
 
 else
 
@@ -126,14 +122,21 @@ else
     # gather the logs
     for (( c=0; c<${NODES}; c++ ))
     do
-        docker exec kubectl-support mkdir -p /opt/results/logs-${c}
-        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/load-tester-${c}:/opt/load_tester/results.txt /opt/results/logs-${c}/
+        docker exec kubectl-support mkdir -p /opt/results/node-${c}
+        docker exec kubectl-support kubectl cp ${GCP_K8_CLUSTER_NAMESPACE}/load-tester-${c}:/opt/load_tester/results.txt /opt/results/node-${c}/
     done
 
-    # copy the perf tests to the workspace
-    docker cp ${CID}:/opt/results ./workspace/reports-${BUILD_NUMBER}/
-    docker exec kubectl-support rm -rf /opt/results/
 fi
+
+# copy the perf tests to the workspace
+docker cp ${CID}:/opt/results/* ./workspace/reports-${BUILD_NUMBER}/
+docker exec kubectl-support rm -rf /opt/results/
+
+for (( c=0; c<${NODES}; c++ ))
+do
+    echo "Last 100 lines from node ${c}"
+     tail -n 100 ./workspace/reports-${BUILD_NUMBER}/node-${c}/result.txt
+done
 
 # delete loader / load-tester service and statefulsets, redundant step
 if [ "$LOADER" = true ] ; then
