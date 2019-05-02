@@ -20,14 +20,14 @@ metadata:
   name: loader
   namespace: namespace_filler
 spec:
-  nodeSelector:
-    managed-search/instance-type: n1-standard-2
   selector:
     matchLabels:
       app: joel # has to match .spec.template.metadata.labels
   serviceName: "loader"
   replicas: num-replicas
   template:
+    nodeSelector:
+      managed-search/instance-type: n1-standard-2
     metadata:
       labels:
         app: joel # has to match .spec.selector.matchLabels
