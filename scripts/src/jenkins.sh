@@ -63,6 +63,8 @@ done
 # execute the load test on docker
 echo "JOB DESCRIPTION: running....."
 
+mkdir ./workspace/reports-${BUILD_NUMBER}/
+
 if [ "$LOADER" = true ] ; then
 
     readarray -t NUM_DOCS_LINES <<< "${NUM_DOCS}"
