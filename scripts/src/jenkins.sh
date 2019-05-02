@@ -115,9 +115,9 @@ else
     for (( c=0; c<${NODES}; c++ ))
     do
       if [ "$PRINT_LOG" = true ] ; then
-        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- sh runLoader.sh ${NUM_DOCS} ${ZK_HOST} ${COLLECTION} >> load_tester.log &
+        docker exec kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- sh runJDBC.sh ${JDBC_QUERY} ${JDBC_SQL_HOST} ${JDBC_USER} ${JDBC_PASSWORD} ${N_TIMES} >> load_tester.log &
       else
-        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- sh runLoader.sh ${NUM_DOCS} ${ZK_HOST} ${COLLECTION}
+        docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load_tester-${c} -- sh runJDBC.sh ${JDBC_QUERY} ${JDBC_SQL_HOST} ${JDBC_USER} ${JDBC_PASSWORD} ${N_TIMES}
       fi
     done
 
