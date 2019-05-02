@@ -106,7 +106,7 @@ else
     # run gatling test for a simulation and pass relevant params
     for (( c=0; c<${NODES}; c++ ))
     do
-       docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY[c]}" ${JDBC_SQL_HOST[c]} ${JDBC_USER[c]} ${JDBC_PASSWORD[c]} ${N_TIMES[c]}
+       docker exec -d kubectl-support kubectl exec -n ${GCP_K8_CLUSTER_NAMESPACE} load-tester-${c} -- sh runJDBC.sh "${JDBC_QUERY_LINES[c]}" ${JDBC_SQL_HOST_LINES[c]} ${JDBC_USER_LINES[c]} ${JDBC_PASSWORD_LINES[c]} ${N_TIMES_LINES[c]}
     done
 
     for (( c=0; c<${NODES}; c++ ))
