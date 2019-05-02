@@ -35,7 +35,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: load-tester
-          image: sarkaramrit2/joel_load-tester:latest
+          image: sarkaramrit2/joel_load_tester:latest
           ports:
             - containerPort: 80
               name: load-tester
