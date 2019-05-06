@@ -26,12 +26,12 @@ spec:
   serviceName: "loader"
   replicas: num_replicas
   template:
-    #nodeSelector:
-      #managed-search/instance-type: n1-standard-2
     metadata:
       labels:
         app: joel # has to match .spec.selector.matchLabels
     spec:
+      nodeSelector:
+        managed-search/instance-type: n1-standard-2
       terminationGracePeriodSeconds: 10
       containers:
         - name: loader
@@ -39,3 +39,10 @@ spec:
           ports:
             - containerPort: 80
               name: loader
+          resources:
+            limits:
+              cpu: 1500m
+              memory: 2Gi
+            requests:
+              cpu: 1500m
+              memory: 2Gi
